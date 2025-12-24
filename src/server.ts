@@ -1,10 +1,11 @@
+import cors from 'cors';
 import express from 'express';
 import 'dotenv/config';
-import cors from 'cors';
-import { getAllUsers } from './scripts/read.js';
-import { createUser } from './utils/createUser.js';
+
 import { addUser } from './scripts/add.js';
 import { deleteUser } from './scripts/delete.js';
+import { getAllUsers } from './scripts/read.js';
+import { createUser } from './utils/createUser.js';
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log('first middleware');
+  console.warn('first middleware');
   next();
 });
 
@@ -26,7 +27,7 @@ app.get('/users', async (req, res) => {
 
     res.json(result);
   } catch (e) {
-    console.log('Error fetching users', e);
+    console.error('Error fetching users', e);
   }
 });
 
@@ -46,7 +47,7 @@ app.get('/users/:userID', async (req, res) => {
 
     res.json(user);
   } catch (e) {
-    console.log('Error finding user id', e);
+    console.error('Error finding user id', e);
   }
 });
 
@@ -60,7 +61,7 @@ app.post('/users', async (req, res) => {
       data: user,
     });
   } catch (e) {
-    console.log('Error adding users', e);
+    console.error('Error adding users', e);
   }
 });
 
@@ -83,12 +84,12 @@ app.delete('/users/:userID', async (req, res) => {
       message: `User ${userToDelete.name} deleted successfully`,
     });
   } catch (e) {
-    console.log('Error deleting user', e);
+    console.error('Error deleting user', e);
   }
 });
 
 app.use((req, res) => {
-  console.log('last middleware');
+  console.warn('last middleware');
   res.status(404).json({
     message: `Route ${req.url} with method ${req.method} not found`,
   });
@@ -108,4 +109,5 @@ app.use((err, req, res, next) => {
 
 const port = Number(process.env.PORT) || 3000;
 
+// eslint-disable-next-line no-console
 app.listen(port, () => console.log(`Server running on port ${port}`));

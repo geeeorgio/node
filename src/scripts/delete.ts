@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
-import { getAllUsers } from './read.js';
+
 import { PATH_DB } from '../constants/path.js';
+
+import { getAllUsers } from './read.js';
 
 export const deleteUser = async (user) => {
   const oldList = await getAllUsers();
@@ -12,6 +14,6 @@ export const deleteUser = async (user) => {
   try {
     await fs.writeFile(PATH_DB, JSON.stringify(newList, null, 2), 'utf-8');
   } catch (e) {
-    console.log('Error:', e);
+    console.error('Error:', e);
   }
 };

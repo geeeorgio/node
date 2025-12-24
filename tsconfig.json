@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    /* File Layout */
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* Environment Settings */
+    "module": "nodenext", // Mandatory for modern Node.js ESM
+    "target": "esnext", // Use latest JS features
+    "lib": ["esnext"],
+    "types": ["node"],
+
+    /* Other Outputs */
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    /* Stricter Typechecking Options */
+    "noUncheckedIndexedAccess": true, // Forces check for undefined when accessing array by index
+    "exactOptionalPropertyTypes": true, // Prevents setting 'undefined' to optional properties
+
+    /* Recommended Options */
+    "strict": true, // Enable all strict type-checking options
+    "verbatimModuleSyntax": true, // Ensures imports are not transformed, preserving ESM
+    "isolatedModules": true, // Disallows features that cannot be compiled by single-file transpilers
+    "skipLibCheck": true,
+    "esModuleInterop": true, // Simplifies importing CommonJS modules
+    "forceConsistentCasingInFileNames": true // Crucial for Linux/Ubuntu deployment
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
