@@ -26,9 +26,10 @@ export default tseslint.config(
       '@typescript-eslint/no-shadow': 'error', // Use TS-aware rule to prevent variable naming conflicts
 
       /* Unused Imports/Variables Management */
+      '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
-        'warn',
+        'error',
         {
           vars: 'all',
           varsIgnorePattern: '^_', // Ignore variables starting with underscore

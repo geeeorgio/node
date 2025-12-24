@@ -1,4 +1,5 @@
 import cors from 'cors';
+import type { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import 'dotenv/config';
 
@@ -12,27 +13,36 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
+app.use((_req: Request, _res: Response, next: NextFunction) => {
   console.warn('first middleware');
   next();
 });
 
-app.get('/', (req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Got to home page' });
 });
 
-app.get('/users', async (req, res) => {
+app.get('/users', async (_req: Request, res: Response) => {
   try {
     const result = await getAllUsers();
 
     res.json(result);
   } catch (e) {
-    console.error('Error fetching users', e);
+    const message =
+      e instanceof Error
+        ? `Error fetching users ${e.message}`
+        : 'Something went wrong.';
+    console.error(message);
   }
 });
 
-app.get('/users/:userID', async (req, res) => {
+app.get('/users/:userID', async (req: Request, res: Response) => {
   const { userID } = req.params;
+  if (!userID) {
+    return res.status(404).json({
+      message: `User with id ${userID} not found`,
+    });
+  }
 
   try {
     const users = await getAllUsers();
@@ -47,11 +57,15 @@ app.get('/users/:userID', async (req, res) => {
 
     res.json(user);
   } catch (e) {
-    console.error('Error finding user id', e);
+    const message =
+      e instanceof Error
+        ? `Error finding user id, ${e.message}`
+        : 'Something went wrong';
+    console.error(message);
   }
 });
 
-app.post('/users', async (req, res) => {
+app.post('/users', async (_req: Request, res: Response) => {
   try {
     const user = createUser();
     await addUser(user);
@@ -61,11 +75,15 @@ app.post('/users', async (req, res) => {
       data: user,
     });
   } catch (e) {
-    console.error('Error adding users', e);
+    const message =
+      e instanceof Error
+        ? `Error adding users, ${e.message}`
+        : 'Something went wrong';
+    console.error(message);
   }
 });
 
-app.delete('/users/:userID', async (req, res) => {
+app.delete('/users/:userID', async (req: Request, res: Response) => {
   const { userID } = req.params;
   if (!userID) return;
 
@@ -84,26 +102,31 @@ app.delete('/users/:userID', async (req, res) => {
       message: `User ${userToDelete.name} deleted successfully`,
     });
   } catch (e) {
-    console.error('Error deleting user', e);
+    const message =
+      e instanceof Error
+        ? `Error deleting user, ${e.message}`
+        : 'Something went wrong';
+    console.error(message);
   }
 });
 
-app.use((req, res) => {
-  console.warn('last middleware');
+app.use((req: Request, res: Response) => {
+  console.warn('Last middleware actcion - no valid routes found');
+
   res.status(404).json({
     message: `Route ${req.url} with method ${req.method} not found`,
   });
 });
 
-app.use((err, req, res, next) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Error:', err.message);
 
-  const isProd = process.env.NODE_ENV === 'production';
+  const isDev = process.env.NODE_ENV === 'development';
 
   res.status(500).json({
-    message: isProd
-      ? 'Internal Server Error. Please try again later'
-      : err.message,
+    message: isDev
+      ? err.message
+      : 'Internal Server Error. Please try again later',
   });
 });
 

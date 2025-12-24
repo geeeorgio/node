@@ -1,10 +1,11 @@
 import fs from 'fs/promises';
 
 import { PATH_DB } from '../constants/path.js';
+import type { User } from '../types/user.js';
 
 import { getAllUsers } from './read.js';
 
-export const deleteUser = async (user) => {
+export const deleteUser = async (user: User) => {
   const oldList = await getAllUsers();
 
   if (oldList.length === 0) return [];

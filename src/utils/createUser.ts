@@ -1,3 +1,5 @@
+import type { User } from '../types/user.js';
+
 const countries = [
   'England',
   'Sweden',
@@ -6,15 +8,22 @@ const countries = [
   'Spain',
   'USA',
   'China',
-  'Portigal',
+  'Portugal',
 ];
+
 const names = ['Dan', 'Pete', 'Max', 'Julia', 'Hanna', 'John', 'Rebeca'];
 
-export const createUser = () => {
+export const createUser = (): User => {
+  const randomName =
+    names[Math.floor(Math.random() * names.length)] ?? 'Default Name';
+  const randomCountry =
+    countries[Math.floor(Math.random() * countries.length)] ??
+    'Default Country';
+
   return {
     id: String(Math.floor(Math.random() * 1000) + Date.now()),
-    name: names[Math.floor(Math.random() * names.length)],
+    name: randomName,
     age: String(Math.floor(Math.random() * 100)),
-    country: countries[Math.floor(Math.random() * countries.length)],
+    country: randomCountry,
   };
 };
