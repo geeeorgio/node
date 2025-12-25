@@ -18,3 +18,12 @@ export const connectDatabase = async () => {
     throw e;
   }
 };
+
+const gracefulShutdown = async () => {
+  await mongoose.disconnect();
+  console.warn('\nDatabase connection closed through app termination');
+  process.exit(0);
+};
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
