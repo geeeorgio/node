@@ -1,39 +1,31 @@
 import type { Request, Response } from 'express';
+import createHttpError from 'http-errors';
 
 import Contact from '../db/models/Contact.js';
 
-export const getAllUsers = async (_req: Request, res: Response) => {
+export const getAllContacts = async (_req: Request, res: Response) => {
   const result = await Contact.find();
 
   res.json(result);
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getContactById = async (req: Request, res: Response) => {
   const { contactId } = req.params;
 
-  if (!contactId) return;
+  const contact = await Contact.findById(contactId);
 
-  try {
-    const contact = await Contact.findById(contactId);
+  if (!contact)
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
 
-    res.json(contact);
-  } catch (e) {
-    if (e instanceof Error) {
-      console.error(`Error: ${e.message}`);
-    }
-
-    return res.status(404).json({
-      message: `Contact with id ${contactId} does not exist.`,
-    });
-  }
+  res.json(contact);
 };
 
-export const addUser = async (req: Request, res: Response) => {
-  const { name, age, country } = req.params;
+export const addContact = async (req: Request, res: Response) => {
+  const { name, age, country, category } = req.body;
 
-  if (!name || !age || !country) {
+  if (!name || !age || !country || !category) {
     return res.status(400).json({
-      message: `Contact should contain all the fields: name, age, country`,
+      message: `Contact should contain all the fields: name, age, country, category`,
     });
   }
 
@@ -41,30 +33,47 @@ export const addUser = async (req: Request, res: Response) => {
     name,
     age,
     country,
+    category,
   });
 
-  res.json({
-    message: `User ${contact.name} added successfully`,
+  res.status(201).json({
+    message: `Contact ${contact.name} added successfully`,
     data: contact,
   });
 };
 
-export const deleteUserById = async (req: Request, res: Response) => {
+export const deleteContactById = async (req: Request, res: Response) => {
   const { contactId } = req.params;
 
   if (!contactId) return;
 
-  const contactToDelete = await Contact.findById(contactId);
+  const contactToDelete = await Contact.findByIdAndDelete(contactId);
 
   if (!contactToDelete) {
-    return res.status(404).json({
-      message: `Can not delete contact, contact with id ${contactId} not found`,
-    });
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
   }
 
-  await Contact.findByIdAndDelete(contactId);
-
   res.json({
-    message: `Contact deleted successfully`,
+    message: `Contact ${contactToDelete.name} deleted successfully`,
+    deleted: contactToDelete,
+  });
+};
+
+export const updateContact = async (req: Request, res: Response) => {
+  const { contactId } = req.params;
+
+  if (!contactId) return;
+
+  const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updatedContact)
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
+
+  res.status(201).json({
+    message: `Contact ${updatedContact.name} updated succesfully`,
+    updated: updatedContact,
   });
 };
