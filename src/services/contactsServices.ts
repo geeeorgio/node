@@ -6,6 +6,8 @@ export const getAll = async ({
   perPage = 10,
   sortBy = 'name',
   sortOrder = 'desc',
+  category,
+  search,
 }: GetAllContactsQuery) => {
   const p = Number(page);
   const pp = Number(perPage);
@@ -13,12 +15,27 @@ export const getAll = async ({
   const limit = pp;
   const skip = (p - 1) * pp;
 
+  const requestQuery = Contact.find();
+  if (category) {
+    requestQuery.where('category').equals(category);
+  }
+
+  if (search) {
+    requestQuery.where({
+      name: {
+        $regex: search,
+        $options: 'i',
+      },
+    });
+  }
+
   const [items, totalContacts] = await Promise.all([
-    Contact.find()
+    requestQuery
+      .clone()
       .skip(skip)
       .limit(limit)
       .sort({ [sortBy]: sortOrder }),
-    Contact.countDocuments(),
+    requestQuery.countDocuments(),
   ]);
 
   return {

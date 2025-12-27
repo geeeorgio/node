@@ -31,6 +31,8 @@ const contactsSchema = new Schema<ContactProps>(
   { versionKey: false, timestamps: true },
 );
 
+contactsSchema.index({ name: 'text' });
+
 const Contact = model<ContactProps>('contact', contactsSchema);
 
 export default Contact;

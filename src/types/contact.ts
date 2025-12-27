@@ -20,6 +20,7 @@ export interface GetAllContactsQuery {
   category?: string;
   sortBy?: ContactSortKey;
   sortOrder?: 'asc' | 'desc';
+  search?: string;
 }
 
 export const contactSortKeys = [
@@ -27,7 +28,7 @@ export const contactSortKeys = [
   'age',
   'country',
   'createdAt',
-  'updatedAt'
+  'updatedAt',
 ] as const;
 
 export type ContactSortKey = (typeof contactSortKeys)[number];

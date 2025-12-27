@@ -46,6 +46,10 @@ export const getContactsQuerySchema = Joi.object({
     .valid(...contactSortKeys)
     .default('name'),
   sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
+  category: Joi.string()
+    .valid(...contactCategoryTypes)
+    .default('work'),
+  search: Joi.string().trim().allow(''),
 });
 
 export const mongoIdValidator = (value: string, helpers: Joi.CustomHelpers) => {
