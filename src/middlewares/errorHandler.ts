@@ -9,7 +9,21 @@ export const errorHandler = (
 ) => {
   const isDev = process.env.NODE_ENV === 'development';
 
-  if (isDev) console.error('Error details:', err.message);
+  if (isDev)
+    console.error(`🚨 Last middleware caught: ${err.name}: ${err.message}`);
+
+  if (
+    err instanceof SyntaxError &&
+    'status' in err &&
+    err.status === 400 &&
+    'body' in err
+  ) {
+    res.status(400).json({
+      message:
+        'Invalid JSON format. Please check your syntax (quotes, commas, etc.)',
+    });
+    return;
+  }
 
   if (err instanceof HttpError) {
     res.status(err.status).json({
@@ -34,7 +48,7 @@ export const errorHandler = (
 
   res.status(500).json({
     message: isDev
-      ? `Internal Server Error: ${err.message}`
+      ? `Error: ${err.message}`
       : 'Something went wrong. Please try again later',
   });
 };

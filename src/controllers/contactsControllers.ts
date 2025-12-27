@@ -1,40 +1,29 @@
 import type { Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
-import Contact from '../db/models/Contact.js';
+import * as contactsService from '../services/contactsServices.js';
 
 export const getAllContacts = async (_req: Request, res: Response) => {
-  const result = await Contact.find();
-
+  const result = await contactsService.getAll();
   res.json(result);
 };
 
-export const getContactById = async (req: Request, res: Response) => {
+export const getContactById = async (
+  req: Request<{ contactId: string }>,
+  res: Response,
+) => {
   const { contactId } = req.params;
+  const contact = await contactsService.getById(contactId);
 
-  const contact = await Contact.findById(contactId);
-
-  if (!contact)
+  if (!contact) {
     throw createHttpError(404, `Contact with id ${contactId} not found`);
+  }
 
   res.json(contact);
 };
 
 export const addContact = async (req: Request, res: Response) => {
-  const { name, age, country, category } = req.body;
-
-  if (!name || !age || !country || !category) {
-    return res.status(400).json({
-      message: `Contact should contain all the fields: name, age, country, category`,
-    });
-  }
-
-  const contact = await Contact.create({
-    name,
-    age,
-    country,
-    category,
-  });
+  const contact = await contactsService.create(req.body);
 
   res.status(201).json({
     message: `Contact ${contact.name} added successfully`,
@@ -42,38 +31,37 @@ export const addContact = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteContactById = async (req: Request, res: Response) => {
+export const deleteContactById = async (
+  req: Request<{ contactId: string }>,
+  res: Response,
+) => {
   const { contactId } = req.params;
-
-  if (!contactId) return;
-
-  const contactToDelete = await Contact.findByIdAndDelete(contactId);
+  const contactToDelete = await contactsService.deleteById(contactId);
 
   if (!contactToDelete) {
     throw createHttpError(404, `Contact with id ${contactId} not found`);
   }
 
   res.json({
-    message: `Contact ${contactToDelete.name} deleted successfully`,
+    message: `Contact deleted successfully`,
     deleted: contactToDelete,
   });
 };
 
-export const updateContact = async (req: Request, res: Response) => {
+export const updateContact = async (
+  req: Request<{ contactId: string }>,
+  res: Response,
+) => {
   const { contactId } = req.params;
 
-  if (!contactId) return;
+  const updatedContact = await contactsService.update(contactId, req.body);
 
-  const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!updatedContact)
+  if (!updatedContact) {
     throw createHttpError(404, `Contact with id ${contactId} not found`);
+  }
 
-  res.status(201).json({
-    message: `Contact ${updatedContact.name} updated succesfully`,
+  res.json({
+    message: `Contact updated successfully`,
     updated: updatedContact,
   });
 };

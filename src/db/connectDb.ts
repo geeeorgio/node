@@ -3,16 +3,19 @@ import mongoose from 'mongoose';
 const { MONGO_DB_URL } = process.env;
 
 export const connectDatabase = async () => {
+  if (!MONGO_DB_URL) {
+    throw new Error('❌ MONGO_DB_URL is not defined in .env file');
+  }
+
   try {
-    if (MONGO_DB_URL) {
-      await mongoose.connect(MONGO_DB_URL);
-      console.warn('Database connected succesfully');
-    }
+    await mongoose.connect(MONGO_DB_URL.trim());
+
+    console.warn(`✅ MongoDB connected: ${mongoose.connection.name}`);
   } catch (e) {
     const message =
       e instanceof Error
-        ? `Error connecting database: ${e.message}`
-        : 'Something went wrong';
+        ? `❌ Error connecting database: ${e.message}`
+        : '⁉️ Something went wrong during DB connection';
 
     console.error(message);
     throw e;
@@ -20,8 +23,15 @@ export const connectDatabase = async () => {
 };
 
 const gracefulShutdown = async () => {
-  await mongoose.disconnect();
-  console.warn('\nDatabase connection closed through app termination');
+  if (mongoose.connection.readyState !== 0) {
+    console.warn('\n🔌 Shutting down gracefully...');
+    try {
+      await mongoose.disconnect();
+      console.warn('✅ Database connection closed');
+    } catch (err) {
+      console.error('❌ Error during DB disconnection:', err);
+    }
+  }
   process.exit(0);
 };
 

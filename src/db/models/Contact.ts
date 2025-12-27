@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose';
 import type { Document } from 'mongoose';
 
-import { contactTypes, type ContactType } from '../../types/contact.js';
+import { contactCategoryTypes, type ContactType } from '../../types/contact.js';
 
-interface ContactProps extends ContactType, Document {}
+export interface ContactProps extends ContactType, Document {}
 
 const contactsSchema = new Schema<ContactProps>(
   {
@@ -12,7 +12,7 @@ const contactsSchema = new Schema<ContactProps>(
       required: true,
     },
     age: {
-      type: String,
+      type: Number,
       required: true,
     },
     country: {
@@ -21,7 +21,7 @@ const contactsSchema = new Schema<ContactProps>(
     },
     category: {
       type: String,
-      enum: contactTypes,
+      enum: contactCategoryTypes,
       required: true,
     },
   },

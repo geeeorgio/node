@@ -5,5 +5,7 @@ export const notFoundHandler = (req: Request, res: Response) => {
     message: `Route ${req.url} with method ${req.method} not found`,
   });
 
-  console.warn('Last middleware warning: No valid routes found. Check the request url & method');
+  console.warn(
+    '⚠️ Last middleware warning: No valid routes found. Check the request url or method',
+  );
 };

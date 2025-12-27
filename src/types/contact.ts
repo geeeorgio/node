@@ -1,10 +1,15 @@
 export type ContactType = {
   name: string;
-  age: string;
+  age: number;
   country: string;
   category: TypeOfContact;
 };
 
-export const contactTypes = ['work', 'friends', 'family', 'random'] as const;
+export const contactCategoryTypes = [
+  'work',
+  'friends',
+  'family',
+  'random',
+] as const;
 
-export type TypeOfContact = (typeof contactTypes)[number];
+export type TypeOfContact = (typeof contactCategoryTypes)[number];
