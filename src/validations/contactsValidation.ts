@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { isValidObjectId } from 'mongoose';
 
 import type { ContactType } from '../types/contact.js';
 import { contactCategoryTypes } from '../types/contact.js';
@@ -37,3 +38,14 @@ export const updateContactSchema = Joi.object({
   country: Joi.string().min(1).max(30),
   category: Joi.string().valid(...contactCategoryTypes),
 }).min(1);
+
+export const mongoIdValidator = (value: string, helpers: Joi.CustomHelpers) => {
+  if (!isValidObjectId(value)) {
+    return helpers.message({ custom: 'Invalid MongoDB ID format' });
+  }
+  return value;
+};
+
+export const contactIdSchema = Joi.object({
+  contactId: Joi.string().custom(mongoIdValidator).required(),
+});
