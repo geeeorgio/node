@@ -2,9 +2,13 @@ import type { Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import * as contactsService from '../services/contactsServices.js';
+import type { GetAllContactsQuery } from '../types/contact.js';
 
-export const getAllContacts = async (_req: Request, res: Response) => {
-  const result = await contactsService.getAll();
+export const getAllContacts = async (
+  req: Request<object, object, object, GetAllContactsQuery>,
+  res: Response,
+) => {
+  const result = await contactsService.getAll(req.query);
   res.json(result);
 };
 

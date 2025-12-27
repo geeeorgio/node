@@ -13,3 +13,21 @@ export const contactCategoryTypes = [
 ] as const;
 
 export type TypeOfContact = (typeof contactCategoryTypes)[number];
+
+export interface GetAllContactsQuery {
+  page?: number;
+  perPage?: number;
+  category?: string;
+  sortBy?: ContactSortKey;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export const contactSortKeys = [
+  'name',
+  'age',
+  'country',
+  'createdAt',
+  'updatedAt'
+] as const;
+
+export type ContactSortKey = (typeof contactSortKeys)[number];

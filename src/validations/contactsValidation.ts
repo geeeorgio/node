@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { isValidObjectId } from 'mongoose';
 
 import type { ContactType } from '../types/contact.js';
-import { contactCategoryTypes } from '../types/contact.js';
+import { contactCategoryTypes, contactSortKeys } from '../types/contact.js';
 
 export const createContactSchema = Joi.object<ContactType>({
   name: Joi.string().min(1).max(20).required().messages({
@@ -38,6 +38,15 @@ export const updateContactSchema = Joi.object({
   country: Joi.string().min(1).max(30),
   category: Joi.string().valid(...contactCategoryTypes),
 }).min(1);
+
+export const getContactsQuerySchema = Joi.object({
+  page: Joi.number().integer().min(1).default(1),
+  perPage: Joi.number().integer().min(1).default(10),
+  sortBy: Joi.string()
+    .valid(...contactSortKeys)
+    .default('name'),
+  sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
+});
 
 export const mongoIdValidator = (value: string, helpers: Joi.CustomHelpers) => {
   if (!isValidObjectId(value)) {

@@ -3,15 +3,21 @@ import { Router } from 'express';
 import * as ContactController from '../controllers/contactsControllers.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { validateId } from '../middlewares/validateId.js';
+import { validateQuery } from '../middlewares/validateQuery.js';
 import {
   contactIdSchema,
   createContactSchema,
+  getContactsQuerySchema,
   updateContactSchema,
 } from '../validations/contactsValidation.js';
 
 const contactsRoutes = Router();
 
-contactsRoutes.get('/', ContactController.getAllContacts);
+contactsRoutes.get(
+  '/',
+  validateQuery(getContactsQuerySchema),
+  ContactController.getAllContacts,
+);
 
 contactsRoutes.get(
   '/:contactId',

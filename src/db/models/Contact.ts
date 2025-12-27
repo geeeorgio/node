@@ -10,6 +10,7 @@ const contactsSchema = new Schema<ContactProps>(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     age: {
       type: Number,
@@ -18,11 +19,13 @@ const contactsSchema = new Schema<ContactProps>(
     country: {
       type: String,
       required: true,
+      trim: true,
     },
     category: {
       type: String,
       enum: contactCategoryTypes,
       required: true,
+      trim: true,
     },
   },
   { versionKey: false, timestamps: true },
