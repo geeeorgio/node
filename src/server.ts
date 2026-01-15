@@ -21,4 +21,4 @@ const port = Number(process.env.PORT) || 3000;
 
 await connectDatabase();
 
-app.listen(port, () => console.warn(`🧩 Server running on port ${port}`));
+app.listen(port, () => console.warn(`Server running on port ${port}`));

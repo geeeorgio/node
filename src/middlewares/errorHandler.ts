@@ -10,7 +10,7 @@ export const errorHandler = (
   const isDev = process.env.NODE_ENV === 'development';
 
   if (isDev)
-    console.error(`🚨 Last middleware caught: "${err.name}": ${err.message}`);
+    console.error(`Last middleware error: "${err.name}": ${err.message}`);
 
   if (
     err instanceof SyntaxError &&

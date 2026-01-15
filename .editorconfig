@@ -1,9 +1,9 @@
-root = true
+root = true # Top-most EditorConfig file
 
 [*]
-charset = utf-8
-end_of_line = lf
-insert_final_newline = true
-indent_style = space
-indent_size = 2
-trim_trailing_whitespace = true
+charset = utf-8                 # Set encoding to UTF-8
+end_of_line = lf                # Unix-style line endings
+insert_final_newline = true     # Ensure file ends with a newline
+indent_style = space            # Use spaces for indentation
+indent_size = 2                 # Indent size is 2 spaces
+trim_trailing_whitespace = true # Remove whitespace at the end of lines

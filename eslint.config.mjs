@@ -1,4 +1,3 @@
-// @ts-check
 import eslint from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
@@ -19,15 +18,15 @@ export default tseslint.config(
       },
     },
     rules: {
-      semi: ['error', 'always'],
+      semi: ['error', 'always'], // Enforce semicolons
 
       /* Variable Shadowing */
-      'no-shadow': 'off', // Turn off base rule
+      'no-shadow': 'off', // Disable base rule (it conflicts with TS)
       '@typescript-eslint/no-shadow': 'error', // Use TS-aware rule to prevent variable naming conflicts
 
       /* Unused Imports/Variables Management */
-      '@typescript-eslint/no-unused-vars': 'off',
-      'unused-imports/no-unused-imports': 'error',
+      '@typescript-eslint/no-unused-vars': 'off', // Disable default TS unused vars rule
+      'unused-imports/no-unused-imports': 'error', // Error if an import is present but not used
       'unused-imports/no-unused-vars': [
         'error',
         {
@@ -58,15 +57,14 @@ export default tseslint.config(
         },
       ],
 
-      /* Best Practices */
       '@typescript-eslint/consistent-type-imports': 'error', // Enforce 'import type' for better performance
-      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-explicit-any': 'error', // Disallow usage of 'any' type
       'no-console': [
         'warn',
         {
-          allow: ['warn', 'error'],
+          allow: ['warn', 'error'], // Discourage leaving console.logs in production code
         },
-      ], // Discourage leaving console.logs in production code
+      ],
     },
   },
 );

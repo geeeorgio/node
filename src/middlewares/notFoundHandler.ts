@@ -6,6 +6,6 @@ export const notFoundHandler = (req: Request, res: Response) => {
   });
 
   console.warn(
-    '⚠️ Last middleware warning: No valid routes found. Check the request url or method',
+    'Last middleware: No valid routes found. Check the request url or method',
   );
 };
